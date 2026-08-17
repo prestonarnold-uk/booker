@@ -1,7 +1,12 @@
 import Fastify, { FastifyInstance } from "fastify";
+import fpSqlitePlugin from "fastify-sqlite-typed";
 
 export const server: FastifyInstance = Fastify({
     logger: true,
+});
+
+server.register(fpSqlitePlugin, {
+    dbFilename: "../data/db.sqlite",
 })
 
 server.get('/ping', async (request, reply) => {
