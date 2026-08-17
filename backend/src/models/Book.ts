@@ -1,4 +1,4 @@
-export type Status = "currenly_reading" | "finished" | "abandoned";
+export type Status = "currently_reading" | "finished" | "abandoned";
 
 export interface Book {
     id: number;
