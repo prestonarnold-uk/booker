@@ -1,6 +1,7 @@
 import Fastify, { FastifyInstance } from "fastify";
 import fpSqlitePlugin from "fastify-sqlite-typed";
 import { authRoutes } from "./routes/auth";
+import fastifyJwt from "@fastify/jwt";
 
 export const server: FastifyInstance = Fastify({
     logger: true,
@@ -8,7 +9,11 @@ export const server: FastifyInstance = Fastify({
 
 server.register(fpSqlitePlugin, {
     dbFilename: "./db/db.sqlite",
-})
+});
+
+server.register(fastifyJwt, {
+    secret: process.env.JWT_SECRET || "development-secret",
+});
 
 server.register(authRoutes, { prefix: "/auth" });
 

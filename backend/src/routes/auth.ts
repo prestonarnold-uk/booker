@@ -16,7 +16,13 @@ export async function authRoutes(server: FastifyInstance) {
         try {
             const user = await auth.register(username, email, password);
 
-            return reply.code(201).send(user);
+            return reply.code(201).send({
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                imageUrl: user.imageUrl,
+                createdAt: user.createdAt,
+            });
         } catch (error) {
             return reply.code(400).send({
                 error: error instanceof Error ? error.message : "Registration failed"
@@ -33,7 +39,21 @@ export async function authRoutes(server: FastifyInstance) {
         try {
             const user = await auth.login(email, password);
 
-            return reply.send(user);
+            const token = server.jwt.sign({
+                id: user.id,
+                username: user.username,
+            });
+
+            return reply.send({
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    imageUrl: user.imageUrl,
+                    createdAt: user.createdAt,
+                },
+                token
+            });
         } catch (error) {
             return reply.code(401).send({
                 error: error instanceof Error ? error.message : "Login failed"
