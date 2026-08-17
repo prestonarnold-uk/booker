@@ -15,7 +15,7 @@ CREATE TABLE books (
 
     title TEXT NOT NULL,
     author TEXT NOT NULL,
-    isbn TEXT UNIQUE,
+    isbn TEXT,
     cover_url TEXT,
     description TEXT,
     publisher TEXT,
