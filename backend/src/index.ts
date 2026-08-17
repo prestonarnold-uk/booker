@@ -6,7 +6,7 @@ export const server: FastifyInstance = Fastify({
 });
 
 server.register(fpSqlitePlugin, {
-    dbFilename: "../data/db.sqlite",
+    dbFilename: "./db.sqlite",
 })
 
 server.get('/ping', async (request, reply) => {
