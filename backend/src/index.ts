@@ -1,5 +1,6 @@
 import Fastify, { FastifyInstance } from "fastify";
 import fpSqlitePlugin from "fastify-sqlite-typed";
+import { authRoutes } from "./routes/auth";
 
 export const server: FastifyInstance = Fastify({
     logger: true,
@@ -9,9 +10,7 @@ server.register(fpSqlitePlugin, {
     dbFilename: "./db/db.sqlite",
 })
 
-server.get('/ping', async (request, reply) => {
-  return { pong: 'it worked!' }
-})
+server.register(authRoutes, { prefix: "/auth" });
 
 const start = async () => {
     try {
