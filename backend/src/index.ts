@@ -2,6 +2,7 @@ import Fastify, { FastifyInstance } from "fastify";
 import fpSqlitePlugin from "fastify-sqlite-typed";
 import { authRoutes } from "./routes/auth";
 import fastifyJwt from "@fastify/jwt";
+import { bookRoutes } from "./routes/books";
 
 export const server: FastifyInstance = Fastify({
     logger: true,
@@ -16,6 +17,7 @@ server.register(fastifyJwt, {
 });
 
 server.register(authRoutes, { prefix: "/auth" });
+server.register(bookRoutes, { prefix: "/books" });
 
 const start = async () => {
     try {
