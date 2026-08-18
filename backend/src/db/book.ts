@@ -2,12 +2,31 @@
 
 import { FastifyInstance } from "fastify";
 import { Book } from "../models/Book";
+import { CreateBook } from "../schemas/book";
 
 export class BookDB {
     constructor(private server: FastifyInstance) { }
 
-    async create(book: Omit<Book, "id" | "createdAt" | "updatedAt">): Promise<Book> {
-        const result = await this.server.db.run("INSERT INTO books (user_id, title, author, isbn, cover_url, description, publisher, published_date, page_count, status, started_at, finished_at, rating, review, notes, is_public) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", book.userId, book.title, book.author, book.isbn, book.coverUrl, book.description, book.publisher, book.publishedDate, book.pageCount, book.status, book.startedAt, book.finishedAt, book.rating, book.review, book.notes, book.isPublic);
+    async create(userId: number, book: CreateBook): Promise<Book> {
+        const result = await this.server.db.run(
+            "INSERT INTO books (user_id, title, author, isbn, cover_url, description, publisher, published_date, page_count, status, started_at, finished_at, rating, review, notes, is_public) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            userId,
+            book.title,
+            book.author,
+            book.isbn ?? null,
+            book.coverUrl ?? null,
+            book.description ?? null,
+            book.publisher ?? null,
+            book.publishedDate ?? null,
+            book.pageCount ?? null,
+            book.status,
+            book.startedAt ?? null,
+            book.finishedAt ?? null,
+            book.rating ?? null,
+            book.review ?? null,
+            book.notes ?? null,
+            book.isPublic ?? true
+        );
 
         if (result.lastID === undefined) {
             throw new Error("Failed to create book");
