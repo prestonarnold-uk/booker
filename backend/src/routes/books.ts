@@ -69,4 +69,38 @@ export async function bookRoutes(server: FastifyInstance) {
 
         return book;
     });
+
+    server.patch("/:id", async (request, reply) => {
+        await request.jwtVerify();
+
+        const { id } = request.params as { id: string };
+        const book = await books.findById(Number(id));
+
+        if (!book || book.userId !== request.user.id) {
+            return reply.code(404).send({
+                error: "Book not found"
+            });
+        }
+
+        const updatedBook = await books.update(book.id, request.body as Partial<Omit<typeof book, "id" | "userId" | "createdAt" | "updatedAt">>);
+
+        return reply.send(updatedBook);
+    });
+
+    server.delete("/:id", async (request, reply) => {
+        await request.jwtVerify();
+
+        const { id } = request.params as { id: string };
+        const book = await books.findById(Number(id));
+
+        if (!book || book.userId !== request.user.id) {
+            return reply.code(404).send({
+                error: "Book not found"
+            });
+        }
+
+        await books.delete(book.id);
+
+        return reply.code(204).send();
+    });
 }
