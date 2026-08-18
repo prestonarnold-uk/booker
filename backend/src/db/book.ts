@@ -7,6 +7,13 @@ import { CreateBook } from "../schemas/book";
 export class BookDB {
     constructor(private server: FastifyInstance) { }
 
+    private normalizeBook(book: Book): Book {
+        return {
+            ...book,
+            isPublic: Boolean(book.isPublic)
+        };
+    }
+
     async create(userId: number, book: CreateBook): Promise<Book> {
         const result = await this.server.db.run(
             "INSERT INTO books (user_id, title, author, isbn, cover_url, description, publisher, published_date, page_count, status, started_at, finished_at, rating, review, notes, is_public) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
@@ -79,10 +86,20 @@ export class BookDB {
     }
 
     async findById(id: number): Promise<Book | undefined> {
-        return this.server.db.get<Book>("SELECT id, user_id AS userId, title, author, isbn, cover_url AS coverUrl, description, publisher, published_date AS publishedDate, page_count AS pageCount, status, started_at AS startedAt, finished_at AS finishedAt, rating, review, notes, is_public AS isPublic, created_at AS createdAt, updated_at AS updatedAt FROM books WHERE id = ?", id);
+        const book = await this.server.db.get<Book>("SELECT id, user_id AS userId, title, author, isbn, cover_url AS coverUrl, description, publisher, published_date AS publishedDate, page_count AS pageCount, status, started_at AS startedAt, finished_at AS finishedAt, rating, review, notes, is_public AS isPublic, created_at AS createdAt, updated_at AS updatedAt FROM books WHERE id = ?", id);
+
+        return book ? this.normalizeBook(book) : undefined;
     }
 
     async findByUserId(userId: number): Promise<Book[]> {
-        return this.server.db.all<Book[]>("SELECT id, user_id AS userId, title, author, isbn, cover_url AS coverUrl, description, publisher, published_date AS publishedDate, page_count AS pageCount, status, started_at AS startedAt, finished_at AS finishedAt, rating, review, notes, is_public AS isPublic, created_at AS createdAt, updated_at AS updatedAt FROM books WHERE user_id = ?", userId);
+        const books = await this.server.db.all<Book[]>("SELECT id, user_id AS userId, title, author, isbn, cover_url AS coverUrl, description, publisher, published_date AS publishedDate, page_count AS pageCount, status, started_at AS startedAt, finished_at AS finishedAt, rating, review, notes, is_public AS isPublic, created_at AS createdAt, updated_at AS updatedAt FROM books WHERE user_id = ?", userId);
+
+        return books.map((book) => this.normalizeBook(book));
+    }
+
+    async findPublicByUserId(userId: number): Promise<Book[]> {
+        const books = await this.server.db.all<Book[]>("SELECT id, user_id AS userId, title, author, isbn, cover_url AS coverUrl, description, publisher, published_date AS publishedDate, page_count AS pageCount, status, started_at AS startedAt, finished_at AS finishedAt, rating, review, notes, is_public AS isPublic, created_at AS createdAt, updated_at AS updatedAt FROM books WHERE user_id = ? AND is_public = 1", userId);
+
+        return books.map((book) => this.normalizeBook(book));
     }
 }
