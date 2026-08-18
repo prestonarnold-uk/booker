@@ -1,31 +1,21 @@
 import { useState } from "react";
 import type { SubmitEvent } from "react";
-import { useRegister } from "../lib/auth";
+import { useLogin } from "../lib/auth";
 
 interface FormErrors {
-    username?: string;
     email?: string;
     password?: string;
     general?: string;
 }
 
-export function RegisterForm() {
-    const registerMutation = useRegister();
-    const [username, setUsername] = useState("");
+export function LoginForm() {
+    const loginMutation = useLogin();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [errors, setErrors] = useState<FormErrors>({});
 
     function validate(): FormErrors {
         const validationErrors: FormErrors = {};
-
-        if (!username.trim()) {
-            validationErrors.username = "Username is required";
-        } else if (username.trim().length < 3) {
-            validationErrors.username = "Username must be at least 3 characters";
-        } else if (username.trim().length > 30) {
-            validationErrors.username = "Username must be 30 characters or less";
-        }
 
         if (!email.trim()) {
             validationErrors.email = "Email is required";
@@ -35,8 +25,6 @@ export function RegisterForm() {
 
         if (!password) {
             validationErrors.password = "Password is required";
-        } else if (password.length < 8) {
-            validationErrors.password = "Password must be at least 8 characters";
         }
 
         return validationErrors;
@@ -55,50 +43,19 @@ export function RegisterForm() {
         setErrors({});
 
         try {
-            await registerMutation.mutateAsync({
-                username: username.trim(),
+            await loginMutation.mutateAsync({
                 email: email.trim(),
                 password,
             });
         } catch (error) {
             setErrors({
-                general: error instanceof Error ? error.message : "Registration failed",
+                general: error instanceof Error ? error.message : "Login failed",
             });
         }
     }
 
     return (
         <form className="auth-form-fields" onSubmit={handleSubmit}>
-            <div className="auth-field">
-                <label htmlFor="username">Username</label>
-
-                <input
-                    id="username"
-                    type="text"
-                    value={username}
-                    onChange={(event) => {
-                        const value = event.target.value;
-                        setUsername(value);
-
-                        if (value.trim().length >= 3 && value.trim().length <= 30) {
-                            setErrors((current) => ({
-                                ...current,
-                                username: undefined
-                            }));
-                        }
-                    }}
-                    placeholder="johnsmith"
-                    autoComplete="username"
-                    aria-invalid={!!errors.username}
-                />
-
-                {errors.username && (
-                    <span className="auth-field-error">
-                        {errors.username}
-                    </span>
-                )}
-            </div>
-
             <div className="auth-field">
                 <label htmlFor="email">Email</label>
 
@@ -123,9 +80,7 @@ export function RegisterForm() {
                 />
 
                 {errors.email && (
-                    <span className="auth-field-error">
-                        {errors.email}
-                    </span>
+                    <span className="auth-field-error">{errors.email}</span>
                 )}
             </div>
 
@@ -140,7 +95,7 @@ export function RegisterForm() {
                         const value = event.target.value;
                         setPassword(value);
 
-                        if (value.length >= 8) {
+                        if (value.length > 0) {
                             setErrors((current) => ({
                                 ...current,
                                 password: undefined
@@ -148,29 +103,25 @@ export function RegisterForm() {
                         }
                     }}
                     placeholder="Your password"
-                    autoComplete="new-password"
+                    autoComplete="current-password"
                     aria-invalid={!!errors.password}
                 />
 
                 {errors.password && (
-                    <span className="auth-field-error">
-                        {errors.password}
-                    </span>
+                    <span className="auth-field-error">{errors.password}</span>
                 )}
             </div>
 
             {errors.general && (
-                <p className="auth-error">
-                    {errors.general}
-                </p>
+                <p className="auth-error">{errors.general}</p>
             )}
 
             <button
                 className="auth-submit"
                 type="submit"
-                disabled={registerMutation.isPending}
+                disabled={loginMutation.isPending}
             >
-                {registerMutation.isPending ? "Creating account..." : "Create account"}
+                {loginMutation.isPending ? "Signing in..." : "Sign in"}
             </button>
         </form>
     );
