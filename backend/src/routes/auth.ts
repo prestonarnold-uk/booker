@@ -60,4 +60,30 @@ export async function authRoutes(server: FastifyInstance) {
             });
         }
     });
+
+    server.get("/me", async (request, reply) => {
+        try {
+            await request.jwtVerify();
+
+            const user = await users.findById(request.user.id);
+
+            if (!user) {
+                return reply.code(404).send({
+                    error: "User not found"
+                });
+            }
+
+            return reply.send({
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                imageUrl: user.imageUrl,
+                createdAt: user.createdAt,
+            });
+        } catch {
+            return reply.code(401).send({
+                error: "Unauthorized"
+            });
+        }
+    });
 }
