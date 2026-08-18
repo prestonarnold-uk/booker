@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&display=swap");
+
+:root {
+    font-family: "IBM Plex Sans", sans-serif;
+    color: #1b2024;
+    background: #f7f7f5;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+
+    --font-sans: "IBM Plex Sans", sans-serif;
+    --font-serif: "Source Serif 4", serif;
+
+    --color-background: #f7f7f5;
+    --color-surface: #ffffff;
+    --color-surface-muted: #f0f0ed;
+
+    --color-text: #1b2024;
+    --color-text-muted: #6b7075;
+    --color-text-subtle: #94999d;
+
+    --color-border: #dedfdd;
+    --color-border-strong: #c7c9c7;
+
+    --color-primary: #1b2024;
+    --color-primary-hover: #343a3f;
+
+    --color-danger: #c83c3c;
+    --color-success: #3c7a57;
+
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
+
+    --content-width: 1200px;
+    --page-padding: 24px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-width: 320px;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    background: var(--color-background);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+    margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-weight: 600;
+}
+
+#root {
+    min-height: 100vh;
+}
+
+.editorial {
+    font-family: var(--font-serif);
+}
